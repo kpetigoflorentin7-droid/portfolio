@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if profile %}{{ profile.full_name }} — {{ profile.title }}{% else %}Portfolio{% endif %}{% endblock %}
+
+{% block content %}
+
+<section id="hero" class="hero">
+    <div class="hero-blob blob-1"></div>
+    <div class="hero-blob blob-2"></div>
+    <div class="container hero-content">
+        {% if profile %}
+        <p class="hero-hello reveal">👋 Bonjour, je suis</p>
+        <div class="hero-photo-wrap reveal">
+            <img src="{{ profile.photo.url }}" alt="{{ profile.full_name }}" class="hero-photo">
+        </div>
+        <h1 class="reveal">{{ profile.full_name }}</h1>
+        <h2 class="hero-title reveal">
+            <span class="typed" data-text="{{ profile.title }}"></span>
+        </h2>
+        <div class="hero-actions reveal">
+            <a href="#contact" class="btn btn-primary">Discutons de votre projet <i class="fa-solid fa-paper-plane"></i></a>
+            {% if profile.cv %}
+            <a href="{{ profile.cv.url }}" class="btn btn-outline" download>Télécharger mon CV <i class="fa-solid fa-download"></i></a>
+            {% endif %}
+        </div>
+        <div class="social-links reveal">
+            {% if profile.github %}<a href="{{ profile.github }}" target="_blank"><i class="fa-brands fa-github"></i></a>{% endif %}
+            {% if profile.linkedin %}<a href="{{ profile.linkedin }}" target="_blank"><i class="fa-brands fa-linkedin"></i></a>{% endif %}
+            {% if profile.twitter %}<a href="{{ profile.twitter }}" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>{% endif %}
+        </div>
+        <a href="#about" class="scroll-hint"><i class="fa-solid fa-chevron-down"></i></a>
+        {% else %}
+        <h1>Configurez votre profil</h1>
+        <p>Ajoutez vos informations depuis l'admin Django (/admin).</p>
+        {% endif %}
+    </div>
+</section>
+
+<section id="about" class="section">
+    <div class="container">
+        <span class="eyebrow reveal">Faisons connaissance</span>
+        <h2 class="section-title reveal">À propos de moi</h2>
+        {% if profile %}
+        <div class="about-grid">
+            <div class="about-text reveal">
+                <p class="bio">{{ profile.bio|linebreaks }}</p>
+                <ul class="contact-info">
+                    <li><i class="fa-solid fa-envelope"></i> {{ profile.email }}</li>
+                    {% if profile.phone %}<li><i class="fa-solid fa-phone"></i> {{ profile.phone }}</li>{% endif %}
+                    {% if profile.location %}<li><i class="fa-solid fa-location-dot"></i> {{ profile.location }}</li>{% endif %}
+                </ul>
+            </div>
+            <div class="skills reveal">
+                <p class="skills-label">Ce que je maîtrise</p>
+                {% for skill in skills %}
+                <div class="skill-item">
+                    <div class="skill-top"><span>{{ skill.name }}</span><span class="skill-pct">{{ skill.level }}%</span></div>
+                    <div class="skill-bar"><div class="skill-fill" data-width="{{ skill.level }}"></div></div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<section id="education" class="section section-alt">
+    <div class="container">
+        <span class="eyebrow reveal">D'où je viens</span>
+        <h2 class="section-title reveal">Mon parcours académique</h2>
+        <div class="timeline">
+            {% for edu in education %}
+            <div class="timeline-item reveal">
+                <div class="timeline-dot"></div>
+                <div class="timeline-date">{{ edu.start_year }} — {% if edu.end_year %}{{ edu.end_year }}{% else %}Aujourd'hui{% endif %}</div>
+                <div class="timeline-content">
+                    <h3>{{ edu.degree }}</h3>
+                    <h4>{{ edu.institution }}</h4>
+                    {% if edu.description %}<p>{{ edu.description }}</p>{% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <p class="empty-msg">Aucune formation ajoutée pour le moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section id="projects" class="section">
+    <div class="container">
+        <span class="eyebrow reveal">Ce que j'ai construit</span>
+        <h2 class="section-title reveal">Projets réalisés</h2>
+        <div class="grid grid-3">
+            {% for project in projects %}
+            <div class="card project-card reveal">
+                {% if project.featured %}<span class="badge-featured">⭐ Coup de cœur</span>{% endif %}
+                <div class="project-img-wrap">
+                    <img src="{{ project.image.url }}" alt="{{ project.title }}">
+                    <a href="{% url 'project_detail' project.slug %}" class="project-overlay">
+                        <span>Voir le projet <i class="fa-solid fa-arrow-right"></i></span>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <h3>{{ project.title }}</h3>
+                    <p>{{ project.short_description }}</p>
+                    <div class="tags">
+                        {% for tech in project.get_technologies_list %}
+                        <span class="tag">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="empty-msg">Aucun projet ajouté pour le moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section id="services" class="section section-alt">
+    <div class="container">
+        <span class="eyebrow reveal">Comment je peux aider</span>
+        <h2 class="section-title reveal">Mes services</h2>
+        <div class="grid grid-3">
+            {% for service in services %}
+            <div class="card service-card reveal">
+                <div class="service-icon"><i class="{{ service.icon }}"></i></div>
+                <h3>{{ service.title }}</h3>
+                <p>{{ service.description }}</p>
+            </div>
+            {% empty %}
+            <p class="empty-msg">Aucun service ajouté pour le moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<section id="contact" class="section contact-section">
+    <div class="container">
+        <span class="eyebrow reveal">Parlons-en</span>
+        <h2 class="section-title reveal">Une idée, un projet ? Écrivez-moi</h2>
+        <p class="contact-sub reveal">Je réponds généralement sous 24 à 48h. N'hésitez pas !</p>
+        <form method="post" class="contact-form reveal">
+            {% csrf_token %}
+            <div class="form-row">
+                {{ form.name }}
+                {{ form.email }}
+            </div>
+            {{ form.subject }}
+            {{ form.message }}
+            <button type="submit" class="btn btn-primary btn-full">Envoyer le message <i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

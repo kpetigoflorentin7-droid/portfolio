@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Portfolio{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <header class="navbar" id="navbar">
+        <div class="container nav-content">
+            <a href="{% url 'home' %}#hero" class="logo">
+                {% if profile %}{{ profile.full_name|slice:":1" }}{% else %}P{% endif %}
+                <span>ortfolio</span>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#hero">Accueil</a></li>
+                    <li><a href="#about">À propos</a></li>
+                    <li><a href="#education">Parcours</a></li>
+                    <li><a href="#projects">Projets</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#contact" class="nav-cta">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="burger" id="burger" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    {% if messages %}
+        <div class="container toast-wrap">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i class="fa-solid {% if message.tags == 'success' %}fa-circle-check{% else %}fa-circle-exclamation{% endif %}"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-content">
+            <div>
+                <p class="footer-name">{% if profile %}{{ profile.full_name }}{% endif %}</p>
+                <p class="footer-tag">Merci de votre visite — à bientôt !</p>
+            </div>
+            <div class="social-links">
+                {% if profile.github %}<a href="{{ profile.github }}" target="_blank"><i class="fa-brands fa-github"></i></a>{% endif %}
+                {% if profile.linkedin %}<a href="{{ profile.linkedin }}" target="_blank"><i class="fa-brands fa-linkedin"></i></a>{% endif %}
+                {% if profile.twitter %}<a href="{{ profile.twitter }}" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>{% endif %}
+            </div>
+        </div>
+        <p class="copyright">&copy; {% now "Y" %} — Fait avec <i class="fa-solid fa-heart"></i> et beaucoup de café.</p>
+    </footer>
+
+    <a href="#hero" class="scroll-top" id="scrollTop"><i class="fa-solid fa-arrow-up"></i></a>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
