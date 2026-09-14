@@ -1,0 +1,7 @@
+{
+    "functions": {
+        "portfolio/wsgi.py": {
+            "maxDuration": 30
+        }
+    }
+}
